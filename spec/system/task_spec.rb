@@ -8,16 +8,19 @@ RSpec.describe 'Task', type: :system do
     context '正常系' do
       it '一覧ページにアクセスした場合、Taskが表示されること' do
         # TODO: ローカル変数ではなく let を使用してください
+        task
         visit project_tasks_path(project)
         expect(page).to have_content task.title
         expect(Task.count).to eq 1
         expect(current_path).to eq project_tasks_path(project)
       end
 
-      xit 'Project詳細からTask一覧ページにアクセスした場合、Taskが表示されること' do
+      it 'Project詳細からTask一覧ページにアクセスした場合、Taskが表示されること' do
         # FIXME: テストが失敗するので修正してください
+        task
         visit project_path(project)
         click_link 'View Todos'
+        switch_to_window(windows.last)
         expect(page).to have_content task.title
         expect(Task.count).to eq 1
         expect(current_path).to eq project_tasks_path(project)
@@ -61,7 +64,7 @@ RSpec.describe 'Task', type: :system do
         fill_in 'Deadline', with: Time.current
         click_button 'Update Task'
         click_link 'Back'
-        expect(find('.task_list')).to have_content(Time.current.strftime('%-m/%d %H:%M'))
+        expect(find('.task_list')).to have_content(Time.current.strftime('%-m/%d %-H:%M'))
         expect(current_path).to eq project_tasks_path(project)
       end
 
