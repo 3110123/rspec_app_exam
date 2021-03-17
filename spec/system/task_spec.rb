@@ -9,7 +9,6 @@ RSpec.describe 'Task', type: :system do
     context '正常系' do
       it '一覧ページにアクセスした場合、Taskが表示されること' do
         # TODO: ローカル変数ではなく let を使用してください
-        task
         visit project_tasks_path(project)
         expect(page).to have_content task.title
         expect(Task.count).to eq 1
@@ -65,7 +64,7 @@ RSpec.describe 'Task', type: :system do
         fill_in 'Deadline', with: Time.current
         click_button 'Update Task'
         click_link 'Back'
-        expect(find('.task_list')).to have_content(Time.current.strftime('%-m/%d %-H:%M'))
+        expect(find('.task_list')).to have_content(short_time(Time.current))
         expect(current_path).to eq project_tasks_path(project)
       end
 
@@ -82,12 +81,12 @@ RSpec.describe 'Task', type: :system do
       it '既にステータスが完了のタスクのステータスを変更した場合、Taskの完了日が更新されないこと' do
         # TODO: FactoryBotのtraitを利用してください
         yesterday_task
-        visit edit_project_task_path(project, task)
+        visit edit_project_task_path(project, yesterday_task)
         select 'todo', from: 'Status'
         click_button 'Update Task'
         expect(page).to have_content('todo')
         expect(page).not_to have_content(Time.current.strftime('%Y-%m-%d'))
-        expect(current_path).to eq project_task_path(project, task)
+        expect(current_path).to eq project_task_path(project, yesterday_task)
       end
     end
   end
